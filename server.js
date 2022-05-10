@@ -1,8 +1,11 @@
-require("dotenv").config();
+require("dotenv").config({ path: "./.env.local" });
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const connection = require("./db");
+const { config } = require("dotenv");
+
+console.log(process.argv)
 
 //database connection
 connection();
