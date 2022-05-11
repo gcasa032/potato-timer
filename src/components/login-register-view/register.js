@@ -1,8 +1,8 @@
 import React from 'react';
-
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import axios from 'axios';
 
 const validEmailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
 
@@ -70,14 +70,25 @@ class Register extends React.Component {
 
     }
 
-    handleSubmit(event){
+    async handleSubmit(event){
         event.preventDefault();
         const errors = this.getErrors();
 
         if(Object.keys(errors).length > 0){
             this.setState({errors})
         } else {
-            alert('Submitted');
+            try {
+                const url = "http://localhost:8080/api/users";
+                const user = {
+                    username: this.state.username,
+                    email: this.state.email,
+                    password: this.state.password}
+                const {data: res} = await axios.post(url, user);
+                alert(res.message)
+            } catch (error){
+                // if (error.response && error.response.status >= 400 && e)
+                alert(error.message)
+            }
         }
  
     }

@@ -1,9 +1,11 @@
-require("dotenv").config({ path: "./.env.local" });
+require("dotenv").config({ path: "./server/.env.local" });
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const connection = require("./db");
-const { config } = require("dotenv");
+
+const userRoutes = require('./routes/users');
+const authRoutes = require('./routes/auth')
 
 console.log(process.argv)
 
@@ -13,6 +15,10 @@ connection();
 //middlewares
 app.use(express.json())
 app.use(cors());
+
+//routes
+app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listeing on ${port}...`))
