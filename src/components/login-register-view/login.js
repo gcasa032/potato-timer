@@ -1,8 +1,11 @@
 import React from "react";
 
 import Form from 'react-bootstrap/Form';
+import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import axios from 'axios';
+import bcrypt from 'bcryptjs';
 
 //eslint-disable-next-line
 const validEmailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
@@ -19,6 +22,11 @@ class Login extends React.Component {
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.baseState = this.state
+    }
+
+    resetForm(){
+        this.setState(this.baseState)
     }
 
     getErrors(){
@@ -54,7 +62,7 @@ class Login extends React.Component {
         }
     }
 
-    handleSubmit(event){
+    async handleSubmit(event){
 
         event.preventDefault();
         const errors = this.getErrors();
@@ -62,17 +70,35 @@ class Login extends React.Component {
         if(Object.keys(errors).length > 0){
             this.setState({errors});
         } else {
-            alert('Logging in..')
+            try {
+                const url = "http://localhost:8080/api/auth";
+                const user = {
+                    email: this.state.email,
+                    password: this.state.password}
+                const {data: res} = await axios.post(url, user);
+                alert(res.message)
+            } catch (error){
+                if (error.response.status = 401)
+                    this.setState({errors: {login: "Invalid Email or Password"}})
+                else if (error.response.status = 400)
+                    this.setState({errors: {login: "Please verify your credentials"}})
+                else
+                    this.setState({errors: {login: "Server Error"}})
+            }   
         }
     }
 
     render(){
+
+        let loginError = (this.state.errors.login) ? true : false
+
         return (
             <Card.Body className="text-center">
                 <Card.Title as="h3">
                     Login
                 </Card.Title>
                 <hr/>
+                <Alert show={loginError} variant="danger">{this.state.errors.login}</Alert>
                 <Form noValidate onSubmit={this.handleSubmit} className="d-grid gap-2">
                     <Form.Group className="mb-2">
                         <Form.Control 

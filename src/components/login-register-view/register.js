@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import axios from 'axios';
 
+import passwordComplexity from "joi-password-complexity"
+
 const validEmailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
 
 class Register extends React.Component {
@@ -18,9 +20,13 @@ class Register extends React.Component {
             errors: {}
         };
 
-
+        this.baseState = this.state
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    resetForm(){
+        this.setState(this.baseState)
     }
 
     handleChange(event){
@@ -47,11 +53,12 @@ class Register extends React.Component {
     getErrors(){
 
         // All fields should be filled out
-        //  Username must be unique
+        // Username must be unique
         // Email must be unique
         // Password must be longer than 8 chars, must have special char and number
         // Password and confPassword must match
         let errors = {}
+        const passComplexityError = passwordComplexity(undefined, "Password").validate(this.state.password).error
 
         if (this.state.username.length < 1){
             errors.username = 'Please enter a username'
@@ -59,11 +66,14 @@ class Register extends React.Component {
         if (!validEmailRegex.test(this.state.email)){
             errors.email = 'Please enter a valid email'
         }
-        if(this.state.password.length < 1){
-            errors.password = "Please enter a password"
-        }
         if(this.state.password !== this.state.confPassword){
             errors.confPassword = "Passwords do not match!"
+        }
+        if (passComplexityError){
+            errors.password = passComplexityError.message
+        }
+        if (this.state.password.length < 1){
+            errors.password = "Please enter a password"
         }
 
         return errors;
@@ -84,10 +94,13 @@ class Register extends React.Component {
                     email: this.state.email,
                     password: this.state.password}
                 const {data: res} = await axios.post(url, user);
-                alert(res.message)
+                this.resetForm()
+                alert('Account created successfully');
             } catch (error){
-                // if (error.response && error.response.status >= 400 && e)
-                alert(error.message)
+                console.log(error)
+                if (error.response.status == 409){
+                    this.setState({errors: {email: "An account with this user already exists"}})
+                }              
             }
         }
  
