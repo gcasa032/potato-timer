@@ -14,7 +14,7 @@ function App() {
       show = <LoginRegisterView/>
 
   return (
-    <div>
+    <div class="text-white">
       <Helmet bodyAttributes={{class: 'bg-dark'}}/>
       {show}
     </div>

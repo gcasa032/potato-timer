@@ -6,6 +6,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { BsHouseFill, BsPersonFill, BsFillGearFill } from "react-icons/bs";
 
+import Timer from './timer/timer';
+
 class HomeView extends React.Component {
   
   logout(){
@@ -18,18 +20,24 @@ class HomeView extends React.Component {
     return (
       <Container fluid>
         <Row className="justify-content-end">
-            <Col as={ButtonGroup} className="m-3" md="auto" ria-label="Basic example">
-              <Button variant="secondary">
-                <BsHouseFill />
-              </Button>
-              <Button variant="secondary">
-                <BsPersonFill />
-              </Button>
-              <Button variant="secondary">
-                <BsFillGearFill />
-              </Button>
+          <Col
+            as={ButtonGroup}
+            className="m-3"
+            md="auto"
+            ria-label="Basic example"
+          >
+            <Button variant="secondary">
+              <BsHouseFill />
+            </Button>
+            <Button variant="secondary">
+              <BsPersonFill />
+            </Button>
+            <Button variant="secondary">
+              <BsFillGearFill />
+            </Button>
           </Col>
         </Row>
+        <Timer />
       </Container>
     );
   }
