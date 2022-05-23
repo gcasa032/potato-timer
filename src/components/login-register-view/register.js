@@ -110,7 +110,7 @@ class Register extends React.Component {
 
         return (
         <Card.Body className="text-center">
-            <Card.Title as="h3">
+            <Card.Title as="h3" className="text-dark">
                 Register
             </Card.Title>
             <hr/>

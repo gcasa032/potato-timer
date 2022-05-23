@@ -94,7 +94,7 @@ class Login extends React.Component {
 
     return (
       <Card.Body className="text-center">
-        <Card.Title as="h3">Login </Card.Title> <hr />
+        <Card.Title as="h3" className="text-dark">Login </Card.Title> <hr />
         <Alert show={loginError} variant="danger">
           {this.state.errors.login}
         </Alert>
